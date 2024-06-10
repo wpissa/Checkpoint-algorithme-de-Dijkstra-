@@ -1,0 +1,52 @@
+function dijkstra(graph, start) {
+    // Création d'un ensemble pour suivre les sommets visités
+    const visited = new Set();
+
+    // Initialisation des distances de départ
+    const distances = {};
+    for (let vertex in graph) {
+        distances[vertex] = Infinity;
+    }
+    distances[start] = 0;
+
+    // Boucle principale de l'algorithme
+    while (true) {
+        let current = null;
+
+        // Trouver le sommet non visité avec la plus petite distance
+        for (let vertex in graph) {
+            if (!visited.has(vertex) && (current === null || distances[vertex] < distances[current])) {
+                current = vertex;
+            }
+        }
+
+        // Si tous les sommets ont été visités ou si le sommet le plus proche est à distance infinie, arrêtez
+        if (current === null || distances[current] === Infinity) {
+            break;
+        }
+
+        // Marquer le sommet actuel comme visité
+        visited.add(current);
+
+        // Mettre à jour les distances des sommets adjacents non visités
+        for (let neighbor in graph[current]) {
+            let distance = distances[current] + graph[current][neighbor];
+            if (distance < distances[neighbor]) {
+                distances[neighbor] = distance;
+            }
+        }
+    }
+
+    return distances;
+}
+
+// Exemple d'utilisation
+const graph = {
+    'A': { 'B': 4, 'C': 2 },
+    'B': { 'A': 4, 'C': 5, 'D': 10 },
+    'C': { 'A': 2, 'B': 5, 'D': 3 },
+    'D': { 'B': 10, 'C': 3 }
+};
+
+const shortestDistances = dijkstra(graph, 'A');
+console.log(shortestDistances);
